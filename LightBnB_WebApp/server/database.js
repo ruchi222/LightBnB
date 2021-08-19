@@ -1,8 +1,12 @@
 const { Pool } = require('pg')
-
 const properties = require('./json/properties.json');
 const users = require('./json/users.json');
-const pool = new Pool()
+const pool = new Pool(
+  {
+    user: "ruchikagosain",
+    database: "lightbnb"
+  }
+);
 
 /// Users
 
@@ -12,6 +16,22 @@ const pool = new Pool()
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithEmail = function(email) {
+  const queryString = (`
+  SELECT *
+  FROM users
+  WHERE users.email = $1;
+  `)
+  return pool.query(queryString, [email])
+    .then(res => {
+      if(res.rows) {
+        return res.rows[0];
+      } else {
+        return null;
+      }
+    })
+    .catch (err => {
+      console.log('query error:', err)
+    });
   let user;
   for (const userId in users) {
     user = users[userId];
@@ -22,7 +42,7 @@ const getUserWithEmail = function(email) {
     }
   }
   return Promise.resolve(user);
-}
+};
 exports.getUserWithEmail = getUserWithEmail;
 
 /**
@@ -31,7 +51,20 @@ exports.getUserWithEmail = getUserWithEmail;
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithId = function(id) {
-  return Promise.resolve(users[id]);
+  const queryString = `
+  SELECT * FROM users
+  WHERE users.id = $1
+  `;
+  return pool.query(queryString, [id])
+    .then(res => {
+      if (res.rows) {
+        return res.rows[0];
+      } else {
+        return null;
+      }
+    })
+    .catch(err => console.log('query error:', err));
+  // return Promise.resolve(users[id]);
 }
 exports.getUserWithId = getUserWithId;
 
@@ -42,6 +75,19 @@ exports.getUserWithId = getUserWithId;
  * @return {Promise<{}>} A promise to the user.
  */
 const addUser =  function(user) {
+  const queryString = `
+  INSERT INTO users (name, email, password)
+  VALUES ($1, $2, $3)
+  RETURNING *;
+  `;
+  const values = [user.name, user.email, user.password];
+  return pool.query(queryString, values)
+    .then(res => {
+      return res.rows[0];
+    })
+    .catch(err => {
+      return console.log('query error:', err);
+    })
   const userId = Object.keys(users).length + 1;
   user.id = userId;
   users[userId] = user;
