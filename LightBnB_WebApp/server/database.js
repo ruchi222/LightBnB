@@ -162,7 +162,8 @@ FROM properties
 JOIN property_reviews ON properties.id = property_id
 `;
 
-// 3 Check if a city, owner_id or price_per_night has been passed in as an option. Add them to the params array and create a WHERE clause
+// 3 Check if a city, owner_id or price_per_night has been passed in as an option. 
+// Add them to the params array and create a WHERE clause
 if (options.city) {
   queryParams.push(`%${options.city}%`);
   queryString += `WHERE city LIKE $${queryParams.length} `;
