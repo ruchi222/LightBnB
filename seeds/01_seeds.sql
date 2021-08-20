@@ -24,3 +24,5 @@ VALUES (7, 6, 5, 5, 'Best LightBnB ever!'),
 (6, 3, 5, 4, 'Great location!'),
 (6, 3, 8, 6, 'Good to hear!'),
 (6, 3, 9, 8, 'Good Luck!');
+
+ 
