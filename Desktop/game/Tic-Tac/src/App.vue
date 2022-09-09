@@ -14,7 +14,7 @@ const CalculateWinner = (board) => {
       return board[a]
     }
   }
-  return null
+  return null;
 }
 const winner = computed(() => CalculateWinner(board.value.flat()))
 const MakeMove = (x, y) => {
